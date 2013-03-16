@@ -83,6 +83,9 @@ def patch_data(self):
 
         if isinstance(f, FormField):
             data[name] = f.patch_data
+        elif isinstance(f, FieldList) \
+                and f.unbound_field.field_class is FormField:
+            data[name] = [entry.patch_data for entry in f.entries]
         else:
             data[name] = f.data
     return data

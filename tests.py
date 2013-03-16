@@ -75,6 +75,10 @@ class EventForm(Form):
     attendee_names = FieldList(TextField())
 
 
+class RaceForm(EventForm):
+    steps = FieldList(FormField(LocationForm))
+
+
 class TestFormProcessAfterMonkeyPatch(object):
     def test_supports_webob_input_wrapper(self):
         json = {
@@ -124,4 +128,14 @@ class TestFormPatchData(object):
             'attendees': None
         }
         form = EventForm.from_json(json)
+        assert form.patch_data == json
+
+    def test_form_field_in_field_list(self):
+        json = {
+            'name': 'test',
+            'steps': [
+                {'name': 'step 1'}
+            ]
+        }
+        form = RaceForm.from_json(json)
         assert form.patch_data == json
